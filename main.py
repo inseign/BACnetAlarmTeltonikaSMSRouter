@@ -15,9 +15,20 @@ this_device = LocalDeviceObject(
     vendorIdentifier=15
 )
 # Create the BACnet application
-this_application = BIPSimpleApplication(this_device, Address("192.168.0.25"))
+try:
+    this_application = BIPSimpleApplication(this_device, Address("192.168.0.18"))
+
+except Exception as e:
+    print(f"Error creating BACnet application: {e}")
+    exit(1)
+
 # Add Who-Is/I-Am services
-this_application.add_capability(WhoIsIAmServices)
+try:
+
+    this_application.add_capability(WhoIsIAmServices)
+except ImportError as e:
+    print(f"Error importing WhoIsIAmServices: {e}")
+    exit(1)
 # Create an Analog Value Object to represent the temperature sensor
 temperature_sensor = AnalogValueObject(
     objectIdentifier=("analogValue", 1),
@@ -29,12 +40,19 @@ temperature_sensor = AnalogValueObject(
 this_application.add_object(temperature_sensor)
 # Function to update the temperature value periodically
 def update_temperature():
-    new_temp = round(random.uniform(20.0, 25.0), 2)  # Simulate temperature change
-    temperature_sensor.presentValue = new_temp
-    print(f"Updated Temperature: {new_temp} °C")
+    try:
+        new_temp = round(random.uniform(20.0, 25.0), 2)  # Simulate temperature change
+        temperature_sensor.presentValue = new_temp
+        print(f"Updated Temperature: {new_temp} °C")
+    except Exception as e:
+        print(f"Error updating temperature: {e}")
     # Schedule the next update
-    from bacpypes.core import deferred
-    deferred(5, update_temperature)  # Update every 5 seconds
+    try:
+        from bacpypes.core import deferred
+        deferred(5, update_temperature)  # Update every 5 seconds
+    except ImportError as e:
+        print(f"Error importing deferred: {e}")
+        exit(1)
 # Start the temperature update loop
 update_temperature()
 run()
