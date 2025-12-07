@@ -11,6 +11,7 @@ from email.mime.text import MIMEText
 import csv
 import time
 from datetime import datetime
+import requests
 
 from bacpypes.core import run, stop, deferred
 from bacpypes.local.device import LocalDeviceObject
