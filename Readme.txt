@@ -1,27 +1,52 @@
-Teltonika SMS
+# Virtual BACnet Temperature Sensor with SMS/Email Alerts
 
-Replace "http://192.168.0.1/api/sms/send" with your RUT956 IP
+This project is a **virtual BACnet temperature sensor** implemented in Python. It simulates a temperature sensor, listens for BACnet alarms, logs them, and sends SMS and email notifications.
 
-Replace 'admin', 'password' with your router credentials
+---
 
-Replace "+61412345678" with the recipient’s phone number
+## Features
 
-Email
+- Periodic temperature updates every 5 seconds - This is more to confirm that the script is running anyone on a supervisor can check this way that a temperature is readable and changing.
+- Listens for incoming BACnet alarms/events
+- Prints `lastUpdate` and `messageText` of alarms
+- Logs alarms to `alarm_log.csv`
+- Sends SMS via Teltonika RUT956
+- Sends email notifications via SMTP
+- Rate-limits alerts to avoid spamming
+- Supports multiple recipients
 
-Replace SMTP credentials with your email account
+---
 
-Use app passwords if required (e.g., Gmail, Outlook)
+## Setup
 
-Replace "recipient@example.com" with the destination email
+1. Clone the repository:
 
-Threading
+git clone <your-repo-url>
+cd <your-repo-folder>
 
-Both SMS and email send in separate threads to avoid blocking BACnet loop
+2. Create a virtual environment:
+python -m venv .venv
 
-Niagara N4
+3. Activate the virtual environment:
+.venv\Scripts\activate
 
-Send alarm notifications to this device IP
+4. Install dependencies:
+pip install -r requirements.txt
 
-The console will print lastUpdate and messageText
+Make sure requests and bacpypes are installed.
 
-SMS/email notifications are triggered automatically
+5. Configuration
+
+Edit the following variables in your script to match your network and recipients:
+
+APPLICATION_IP and APPLICATION_PORT – your BACnet IP and port
+TELTONIKA_IP and TELTONIKA_AUTH – your Teltonika RUT956 router credentials
+SMS_RECIPIENTS – phone numbers for SMS notifications
+SMTP_SERVER, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, EMAIL_RECIPIENTS – for email notifications
+ALERT_INTERVAL – rate-limiting interval in seconds
+
+Logging
+
+All alarms are logged to alarm_log.csv with the following columns:
+
+Timestamp, LastUpdate, Message
